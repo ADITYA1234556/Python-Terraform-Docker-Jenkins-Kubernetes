@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  flask_app:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+    depends_on:
+      - my_mysql
+
+  my_mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: admin
+      MYSQL_USER: adi
+      MYSQL_PASSWORD: admin
+    ports:
+      - "3306:3306"
