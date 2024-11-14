@@ -1,4 +1,5 @@
 Flask==2.0.2
 Flask-SQLAlchemy==2.5.1
+SQLAlchemy==1.4.27  # Specify a compatible version of SQLAlchemy
 mysqlclient==2.1.0
-werkzeug==2.0.3  # Specify a compatible version of werkzeug
+werkzeug==2.0.3
