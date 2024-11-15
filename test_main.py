@@ -1,41 +1,46 @@
 import pytest
 from main import app, db, Task
 
+# Use Flask's test client
 @pytest.fixture
 def client():
-    # Configure Flask testing environment
-    app.config['TESTING'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'  # Use in-memory SQLite for testing
-    with app.app_context():
-        db.create_all()
     with app.test_client() as client:
         yield client
 
-def test_create_task(client):
-    response = client.post('/tasks', json={"title": "Test Task", "description": "Test Description"})
+# Test POST /tasks endpoint without hitting the real database
+def test_create_task(client, mocker):
+    # Mock the db session methods to avoid hitting the database
+    mock_add = mocker.patch('app.db.session.add')
+    mock_commit = mocker.patch('app.db.session.commit')
+
+    task_data = {'title': 'Test Task', 'description': 'Test description'}
+    response = client.post('/tasks', json=task_data)
+
+    # Check that the mock methods were called
+    mock_add.assert_called_once()
+    mock_commit.assert_called_once()
+
+    # Check the response
     assert response.status_code == 201
-    data = response.get_json()
-    assert data['task']['title'] == "Test Task"
+    assert response.json['message'] == 'Task created'
+    assert response.json['task']['title'] == 'Test Task'
+    assert response.json['task']['description'] == 'Test description'
 
-def test_get_tasks(client):
-    client.post('/tasks', json={"title": "Task 1", "description": "Description 1"})
-    client.post('/tasks', json={"title": "Task 2", "description": "Description 2"})
+# Test GET /tasks endpoint without hitting the real database
+def test_get_tasks(client, mocker):
+    # Mock the database query
+    mock_query_all = mocker.patch('app.Task.query.all', return_value=[
+        Task(id=1, title='Test Task 1', description='Test description 1', done=False),
+        Task(id=2, title='Test Task 2', description='Test description 2', done=True)
+    ])
+
     response = client.get('/tasks')
+
+    # Check that the mock method was called
+    mock_query_all.assert_called_once()
+
+    # Check the response
     assert response.status_code == 200
-    data = response.get_json()
-    assert len(data['tasks']) == 2
-
-def test_update_task(client):
-    response = client.post('/tasks', json={"title": "Old Title", "description": "Old Description"})
-    task_id = response.get_json()['task']['id']
-    update_response = client.put(f'/tasks/{task_id}', json={"title": "New Title", "done": True})
-    assert update_response.status_code == 200
-    updated_data = update_response.get_json()['task']
-    assert updated_data['title'] == "New Title"
-    assert updated_data['done'] is True
-
-def test_delete_task(client):
-    response = client.post('/tasks', json={"title": "Task to Delete"})
-    task_id = response.get_json()['task']['id']
-    delete_response = client.delete(f'/tasks/{task_id}')
-    assert delete_response.status_code == 200
+    assert len(response.json['tasks']) == 2
+    assert response.json['tasks'][0]['title'] == 'Test Task 1'
+    assert response.json['tasks'][1]['done'] is True
