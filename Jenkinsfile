@@ -46,7 +46,7 @@ pipeline {
         stage('Docker compose down'){
             steps{
                 script {
-                    sh 'docker-compose down'
+                    sh 'docker-compose down --remove-orphans'
                 }
             }
         }
