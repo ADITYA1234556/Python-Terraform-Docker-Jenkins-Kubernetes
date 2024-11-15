@@ -10,7 +10,7 @@ services:
       my_mysql:
         condition: service_healthy
 
-  my_mysql:
+  mysql-service:
     image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
