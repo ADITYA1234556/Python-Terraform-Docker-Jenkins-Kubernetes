@@ -1,5 +1,8 @@
 pipeline {
     agent any
+     tools {
+        git 'Default'  // This refers to the Git installation name configured in Jenkins
+    }
     environment {
         DOCKER_IMAGE_FLASK = "adityahub2255/flask-app"
         DOCKER_IMAGE_MYSQL = "adityahub2255/mysql"  // Define MySQL Docker image
