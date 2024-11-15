@@ -8,19 +8,9 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Install dependencies for mysqlclient
-#RUN apt-get update && \
-#    apt-get install -y default-libmysqlclient-dev build-essential mariadb-client && \
-#    rm -rf /var/lib/apt/lists/* \
-
 RUN apt-get update && \
-    apt-get install -y wget gnupg lsb-release && \
-    # Add MySQL APT GPG key and configuration package
-    wget https://dev.mysql.com/get/mysql-apt-config_0.8.17-1_all.deb && \
-    dpkg -i mysql-apt-config_0.8.17-1_all.deb && \
-    apt-get update && \
     apt-get install -y mysql-client && \
     rm -rf /var/lib/apt/lists/*
-
 #RUN apt-get update && \
 #    apt-get install -y default-libmysqlclient-dev build-essential && \
 #    rm -rf /var/lib/apt/lists/*
