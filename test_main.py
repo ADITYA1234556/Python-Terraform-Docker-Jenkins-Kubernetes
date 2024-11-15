@@ -5,7 +5,7 @@ from main import app, db, Task
 @pytest.fixture
 def client():
     # Set the app's testing configuration
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'  # Use an in-memory SQLite database for tests
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://adi:admin@mysql-service:3306/admin'  # Use an in-memory SQLite database for tests
     app.config['TESTING'] = True
     with app.test_client() as client:
         yield client
