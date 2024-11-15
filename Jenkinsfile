@@ -23,7 +23,7 @@ pipeline {
             steps {
                 script {
                     // Build the Flask Docker image
-                    docker.build(DOCKER_IMAGE_FLASK, ".")
+                    docker.build("${DOCKER_IMAGE_FLASK}:${DOCKER_TAG}", ".")
                 }
             }
         }
@@ -58,7 +58,7 @@ pipeline {
                     sh "docker push ${DOCKER_IMAGE_FLASK}:${DOCKER_TAG}"
 
                     // Push the MySQL Docker image to Docker Hub
-                    sh "docker push ${DOCKER_IMAGE_MYSQL}:${DOCKER_TAG}"
+                    sh "docker push ${DOCKER_IMAGE_MYSQL}:5.7"
                 }
             }
         }
