@@ -84,8 +84,8 @@ pipeline {
                     sh 'KUBECONFIG=$KUBE_CONFIG kubectl get nodes'
 
                     // Deploy Flask app and MySQL to Kubernetes
-                    sh 'KUBECONFIG=$KUBE_CONFIG kubectl apply -f mysql-deployment.yaml -n ${KUBE_NAMESPACE}'
-                    sh 'KUBECONFIG=$KUBE_CONFIG kubectl apply -f flask-app-deployment.yaml -n ${KUBE_NAMESPACE}'
+                    sh 'KUBECONFIG=$KUBE_CONFIG kubectl apply -f $WORKSPACE/mysql-deployment.yaml -n ${KUBE_NAMESPACE}'
+                    sh 'KUBECONFIG=$KUBE_CONFIG kubectl apply -f $WORKSPACE/flask-app-deployment.yaml -n ${KUBE_NAMESPACE}'
                 }
                 }
             }
