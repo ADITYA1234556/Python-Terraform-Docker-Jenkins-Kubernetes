@@ -75,12 +75,12 @@ pipeline {
 
                     // Set the KUBECONFIG environment variable and apply the Kubernetes manifests
                     sh 'export KUBECONFIG=$KUBE_CONFIG'
-                    sh 'kubectl config view'
-                    sh 'kubectl get nodes'
+                    sh 'KUBECONFIG=$KUBE_CONFIG kubectl config view'
+                    sh 'KUBECONFIG=$KUBE_CONFIG kubectl get nodes'
 
                     // Deploy Flask app and MySQL to Kubernetes
-                    sh 'kubectl apply -f mysql-deployment.yaml -n ${KUBE_NAMESPACE}'
-                    sh 'kubectl apply -f flask-app-deployment.yaml -n ${KUBE_NAMESPACE}'
+                    sh 'KUBECONFIG=$KUBE_CONFIG kubectl apply -f mysql-deployment.yaml -n ${KUBE_NAMESPACE}'
+                    sh 'KUBECONFIG=$KUBE_CONFIG kubectl apply -f flask-app-deployment.yaml -n ${KUBE_NAMESPACE}'
                 }
             }
         }
