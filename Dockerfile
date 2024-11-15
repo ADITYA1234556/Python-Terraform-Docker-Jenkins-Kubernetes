@@ -9,7 +9,7 @@ COPY requirements.txt .
 
 # Install dependencies for mysqlclient
 RUN apt-get update && \
-    apt-get install -y mysql-client && \
+    apt-get install -y default-mysql-client && \
     rm -rf /var/lib/apt/lists/*
 #RUN apt-get update && \
 #    apt-get install -y default-libmysqlclient-dev build-essential && \
