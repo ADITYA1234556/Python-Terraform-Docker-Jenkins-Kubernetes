@@ -24,10 +24,12 @@ pipeline {
         stage('Run Unit Tests') {
             steps {
                 script {
-                    sh 'source /venv/bin/activate'
-
-                    // Run unit tests using pytest
-                    sh 'pytest test_main.py --maxfail=1 --disable-warnings -q'
+                     // Ensure the shell is using bash and activate the virtual environment using '.'
+                    sh '''
+                        #!/bin/bash
+                        . /venv/bin/activate
+                        pytest test_main.py --maxfail=1 --disable-warnings -q
+                    '''
                 }
             }
         }
