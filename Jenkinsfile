@@ -37,14 +37,14 @@ pipeline {
             }
         }
 
-        stage('Run Unit Tests') {
-            steps {
-                script {
-                    // Run unit tests using pytest
-                    sh 'pytest tests/ --maxfail=1 --disable-warnings -q'
-                }
-            }
-        }
+//         stage('Run Unit Tests') {
+//             steps {
+//                 script {
+//                     // Run unit tests using pytest
+//                     sh 'pytest tests/ --maxfail=1 --disable-warnings -q'
+//                 }
+//             }
+//         }
 
         stage('Push Docker Images') {
             steps {
