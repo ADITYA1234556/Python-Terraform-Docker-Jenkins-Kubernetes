@@ -66,6 +66,7 @@ pipeline {
             }
         }
 
+
         stage('Deploy to Kubernetes') {
             steps {
                 script {
@@ -73,6 +74,9 @@ pipeline {
                     withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE')]) {
                         // Set KUBECONFIG environment variable to the location of the kubeconfig file
                         sh 'export KUBECONFIG=$KUBECONFIG_FILE'
+
+                        // Ensure kubectl is using the kubeconfig
+                        sh 'kubectl config view'
 
                         // Deploy Flask app and MySQL to Kubernetes
                         sh 'kubectl apply -f mysql-deployment.yaml -n ${KUBE_NAMESPACE}'
