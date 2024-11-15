@@ -16,7 +16,7 @@ RUN apt-get update && \
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code into the container
-COPY . .
+COPY main.py .
 
 # Set environment variables for Flask
 ENV FLASK_APP=main.py

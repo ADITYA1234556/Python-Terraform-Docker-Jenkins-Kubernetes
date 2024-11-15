@@ -5,3 +5,5 @@ Hosted a mysql container
 
 Issue 2: 
 Cant connect to mysql container from local machine
+Solution:
+Uses docker-compose to create connection between containers
