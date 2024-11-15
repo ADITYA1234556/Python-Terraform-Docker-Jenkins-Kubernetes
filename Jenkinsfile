@@ -66,23 +66,6 @@ pipeline {
                 }
             }
         }
-        stage('Verify KubeConfig') {
-            steps {
-                script {
-                    // Save the kubeconfig into a temporary file
-                    writeFile file: '/tmp/kubeconfig', text: KUBE_CONFIG
-
-                    // Print the first 20 lines of the kubeconfig file to verify it (without exposing full contents)
-                    sh 'head -n 20 /tmp/kubeconfig'  // Adjust the number of lines to your preference
-                    sh 'cat /tmp/kubeconfig'
-                    sh 'kubectl get nodes'
-
-                    // Optionally, you could check the existence of the file instead of printing it
-                    sh 'ls -l /tmp/kubeconfig'
-                }
-            }
-        }
-
         stage('Deploy to Kubernetes') {
             steps {
                 script {
