@@ -4,12 +4,17 @@ from main import app, db, Task
 # Use Flask's test client
 @pytest.fixture
 def client():
+    # Set the app's testing configuration
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'  # Use an in-memory SQLite database for tests
+    app.config['TESTING'] = True
     with app.test_client() as client:
         yield client
+    db.session.remove()  # Clean up the session after tests
+
 
 # Test POST /tasks endpoint without hitting the real database
 def test_create_task(client, mocker):
-    # Mock the db session methods to avoid hitting the database
+    # Mock the db session methods to avoid hitting the actual database
     mock_add = mocker.patch('app.db.session.add')
     mock_commit = mocker.patch('app.db.session.commit')
 
@@ -25,6 +30,7 @@ def test_create_task(client, mocker):
     assert response.json['message'] == 'Task created'
     assert response.json['task']['title'] == 'Test Task'
     assert response.json['task']['description'] == 'Test description'
+
 
 # Test GET /tasks endpoint without hitting the real database
 def test_get_tasks(client, mocker):
