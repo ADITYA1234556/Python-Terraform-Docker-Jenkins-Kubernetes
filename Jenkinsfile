@@ -83,7 +83,7 @@ pipeline {
                     sh 'KUBECONFIG=$KUBE_CONFIG kubectl config view'
                     sh 'KUBECONFIG=$KUBE_CONFIG kubectl get nodes'
 
-                    sh ' envsubst < $WORKSPACE/mysql-dep.yaml. > $WORKSPACE/mysql-deployment-updated.yaml'
+                    sh ' envsubst < $WORKSPACE/mysql-dep.yaml > $WORKSPACE/mysql-deployment-updated.yaml'
                     sh ' envsubst < $WORKSPACE/flask-dep.yaml > $WORKSPACE/flask-deployment-updated.yaml'
 
                     // Deploy Flask app and MySQL to Kubernetes
