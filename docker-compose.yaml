@@ -7,7 +7,7 @@ services:
     environment:
       - FLASK_ENV=development
     depends_on:
-      my_mysql:
+      mysql-service:
         condition: service_healthy
 
   mysql-service:
