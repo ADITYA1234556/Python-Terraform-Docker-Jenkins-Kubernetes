@@ -9,7 +9,7 @@ pipeline {
         DOCKER_REGISTRY_CREDENTIALS = "dockerhub-creds" // Use your Docker registry credentials
         KUBE_NAMESPACE = "default" // Kubernetes namespace to deploy to
         DOCKER_TAG = "${GIT_COMMIT}" // Tag Docker images with the git commit ID
-        KUBE_CONFIG = credentials('kubeconfig')
+        KUBE_CONFIG = "/tmp/kubeconfig"
     }
 
     stages {
@@ -86,18 +86,17 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    // Use the kubeconfig stored in Jenkins as the Kubeconfig file
-                    withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE')]) {
-                        // Set KUBECONFIG environment variable to the location of the kubeconfig file
-                        sh 'export KUBECONFIG=$KUBECONFIG_FILE'
+                    // Check if kubeconfig file exists and display first 20 lines to verify it
+                    sh 'ls -l $KUBE_CONFIG'
+                    sh 'head -n 20 $KUBE_CONFIG'
 
-                        // Ensure kubectl is using the kubeconfig
-                        sh 'kubectl config view'
+                    // Set the KUBECONFIG environment variable and apply the Kubernetes manifests
+                    sh 'export KUBECONFIG=$KUBE_CONFIG'
+                    sh 'kubectl config view'
 
-                        // Deploy Flask app and MySQL to Kubernetes
-                        sh 'kubectl apply -f mysql-deployment.yaml -n ${KUBE_NAMESPACE}'
-                        sh 'kubectl apply -f flask-app-deployment.yaml -n ${KUBE_NAMESPACE}'
-                    }
+                    // Deploy Flask app and MySQL to Kubernetes
+                    sh 'kubectl apply -f mysql-deployment.yaml -n ${KUBE_NAMESPACE}'
+                    sh 'kubectl apply -f flask-app-deployment.yaml -n ${KUBE_NAMESPACE}'
                 }
             }
         }
