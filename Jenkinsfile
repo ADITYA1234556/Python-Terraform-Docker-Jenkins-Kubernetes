@@ -102,10 +102,10 @@ pipeline {
     }
 
     post {
-        always {
-            // Clean up after the build
-            cleanWs()
-        }
+//         always {
+//             // Clean up after the build
+//             cleanWs()
+//         }
 
         success {
             // Notify on success
