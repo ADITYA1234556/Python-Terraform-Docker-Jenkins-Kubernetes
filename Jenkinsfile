@@ -9,6 +9,7 @@ pipeline {
         DOCKER_REGISTRY_CREDENTIALS = "dockerhub-creds" // Use your Docker registry credentials
         KUBE_NAMESPACE = "default" // Kubernetes namespace to deploy to
         DOCKER_TAG = "${GIT_COMMIT}" // Tag Docker images with the git commit ID
+        KUBE_CONFIG = credentials('kubeconfig')
     }
 
     stages {
@@ -65,7 +66,20 @@ pipeline {
                 }
             }
         }
+        stage('Verify KubeConfig') {
+            steps {
+                script {
+                    // Save the kubeconfig into a temporary file
+                    writeFile file: '/tmp/kubeconfig', text: KUBE_CONFIG
 
+                    // Print the first 20 lines of the kubeconfig file to verify it (without exposing full contents)
+                    sh 'head -n 20 /tmp/kubeconfig'  // Adjust the number of lines to your preference
+
+                    // Optionally, you could check the existence of the file instead of printing it
+                    sh 'ls -l /tmp/kubeconfig'
+                }
+            }
+        }
 
         stage('Deploy to Kubernetes') {
             steps {
