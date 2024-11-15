@@ -74,6 +74,7 @@ pipeline {
 
                     // Print the first 20 lines of the kubeconfig file to verify it (without exposing full contents)
                     sh 'head -n 20 /tmp/kubeconfig'  // Adjust the number of lines to your preference
+                    sh 'cat /tmp/kubeconfig'
 
                     // Optionally, you could check the existence of the file instead of printing it
                     sh 'ls -l /tmp/kubeconfig'
