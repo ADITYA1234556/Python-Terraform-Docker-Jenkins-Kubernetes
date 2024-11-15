@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: mysql:5.7
+        image: adityahub2255/mysql:{{DOCKER_TAG}}
         env:
           - name: MYSQL_ROOT_PASSWORD
             value: rootpassword
