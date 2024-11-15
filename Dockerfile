@@ -9,8 +9,15 @@ COPY requirements.txt .
 
 # Install dependencies for mysqlclient
 RUN apt-get update && \
-    apt-get install -y default-libmysqlclient-dev build-essential mysql-client && \
+    apt-get install -y wget gnupg && \
+    wget https://dev.mysql.com/get/mysql-apt-config_0.8.17-1_all.deb && \
+    dpkg -i mysql-apt-config_0.8.17-1_all.deb && \
+    apt-get update && \
+    apt-get install -y mysql-client && \
     rm -rf /var/lib/apt/lists/*
+#RUN apt-get update && \
+#    apt-get install -y default-libmysqlclient-dev build-essential && \
+#    rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
