@@ -16,7 +16,7 @@ RUN apt-get update && \
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY wait.sh /wait.sh
-RUN chmod +x /wait.sh
+RUN chmod +x wait.sh
 
 # Copy the rest of the application code into the container
 COPY main.py .
