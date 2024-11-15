@@ -15,8 +15,8 @@ RUN apt-get update && \
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY wait-for-it.sh /wait-for-it.sh
-RUN chmod +x /wait-for-it.sh
+COPY wait.sh /wait.sh
+RUN chmod +x /wait.sh
 
 # Copy the rest of the application code into the container
 COPY main.py .
@@ -31,4 +31,4 @@ EXPOSE 5000
 # Run the application
 #CMD ["flask", "run", "--host=0.0.0.0"]
 
-CMD ["/wait-for-it.sh", "mysql-service:3306", "--", "flask", "run", "--host=0.0.0.0", "--port=5000"]
+CMD ["/wait.sh", "mysql-service:3306", "--", "flask", "run", "--host=0.0.0.0", "--port=5000"]
