@@ -39,6 +39,14 @@ pipeline {
             }
         }
 
+        stage('Docker compose down'){
+            steps{
+                script {
+                    sh 'docker-compose down'
+                }
+            }
+        }
+
         stage('Run Docker Compose') {
             steps {
                 script {
