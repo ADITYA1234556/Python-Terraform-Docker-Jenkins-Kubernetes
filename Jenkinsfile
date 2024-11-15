@@ -21,18 +21,18 @@ pipeline {
             }
         }
 
-//         stage('Run Unit Tests') {
-//             steps {
-//                 script {
-//                      // Ensure the shell is using bash and activate the virtual environment using '.'
-//                     sh '''
-//                         #!/bin/bash
-//                         . /venv/bin/activate
-//                         pytest test_main.py --maxfail=1 --disable-warnings -q
-//                     '''
-//                 }
-//             }
-//         }
+        stage('Run Unit Tests') {
+            steps {
+                script {
+                     // Ensure the shell is using bash and activate the virtual environment using '.'
+                    sh '''
+                        #!/bin/bash
+                        . /venv/bin/activate
+                        pytest test_main.py --maxfail=1 --disable-warnings -q
+                    '''
+                }
+            }
+        }
 
         stage('Docker compose down'){
             steps{
