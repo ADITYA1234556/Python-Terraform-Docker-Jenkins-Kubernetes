@@ -54,11 +54,14 @@ pipeline {
                         sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
                     }
 
+                    // Tag the MySQL image with the commit tag before pushing
+                    sh "docker tag mysql:5.7 ${DOCKER_IMAGE_MYSQL}:${DOCKER_TAG}"
+
                     // Push the Flask Docker image to Docker Hub
                     sh "docker push ${DOCKER_IMAGE_FLASK}:${DOCKER_TAG}"
 
                     // Push the MySQL Docker image to Docker Hub
-                    sh "docker push ${DOCKER_IMAGE_MYSQL}:5.7"
+                    sh "docker push ${DOCKER_IMAGE_MYSQL}:${DOCKER_TAG}"
                 }
             }
         }
