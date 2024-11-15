@@ -21,6 +21,15 @@ pipeline {
             }
         }
 
+        stage('Run Unit Tests') {
+            steps {
+                script {
+                    // Run unit tests using pytest
+                    sh 'pytest test_main.py --maxfail=1 --disable-warnings -q'
+                }
+            }
+        }
+
         stage('Build Flask Docker Image') {
             steps {
                 script {
@@ -38,15 +47,6 @@ pipeline {
                 }
             }
         }
-
-//         stage('Run Unit Tests') {
-//             steps {
-//                 script {
-//                     // Run unit tests using pytest
-//                     sh 'pytest tests/ --maxfail=1 --disable-warnings -q'
-//                 }
-//             }
-//         }
 
         stage('Push Docker Images') {
             steps {
