@@ -21,24 +21,15 @@ pipeline {
             }
         }
 
-//         stage('Run Unit Tests') {
-//             steps {
-//                 script {
-//                      // Ensure the shell is using bash and activate the virtual environment using '.'
-//                     sh '''
-//                         #!/bin/bash
-//                         . /venv/bin/activate
-//                         pytest test_main.py --maxfail=1 --disable-warnings -q
-//                     '''
-//                 }
-//             }
-//         }
-
-        stage('Build Flask Docker Image') {
+        stage('Run Unit Tests') {
             steps {
                 script {
-                    // Build the Flask Docker image
-                    docker.build("${DOCKER_IMAGE_FLASK}:${DOCKER_TAG}", ".")
+                     // Ensure the shell is using bash and activate the virtual environment using '.'
+                    sh '''
+                        #!/bin/bash
+                        . /venv/bin/activate
+                        pytest test_main.py --maxfail=1 --disable-warnings -q
+                    '''
                 }
             }
         }
@@ -56,6 +47,15 @@ pipeline {
                 script {
                     // Use Docker Compose to build and start the services defined in docker-compose.yaml
                     sh 'docker-compose -f docker-compose.yaml up --build -d'
+                }
+            }
+        }
+
+        stage('Build Flask Docker Image') {
+            steps {
+                script {
+                    // Build the Flask Docker image
+                    docker.build("${DOCKER_IMAGE_FLASK}:${DOCKER_TAG}", ".")
                 }
             }
         }
