@@ -67,23 +67,12 @@ pipeline {
             }
         }
 
-        stage('Configure AWS Credentials') {
-            steps {
-                script {
-                    // Using 'withCredentials' to inject AWS credentials into the environment variables
-                    withCredentials([usernamePassword(credentialsId: 'aws-credentials-id',
-                                                       usernameVariable: 'AWS_ACCESS_KEY_ID',
-                                                       passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                        // Now you can use AWS CLI commands with these credentials
-                        sh 'aws s3 ls'
-                    }
-                }
-            }
-        }
-
         stage('Deploy to Kubernetes') {
             steps {
                 script {
+                withCredentials([usernamePassword(credentialsId: 'aws-credentials-id',
+                                                       usernameVariable: 'AWS_ACCESS_KEY_ID',
+                                                       passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                     // Check if kubeconfig file exists and display first 20 lines to verify it
                     sh 'ls -l $KUBE_CONFIG'
                     sh 'head -n 20 $KUBE_CONFIG'
@@ -96,6 +85,7 @@ pipeline {
                     // Deploy Flask app and MySQL to Kubernetes
                     sh 'KUBECONFIG=$KUBE_CONFIG kubectl apply -f mysql-deployment.yaml -n ${KUBE_NAMESPACE}'
                     sh 'KUBECONFIG=$KUBE_CONFIG kubectl apply -f flask-app-deployment.yaml -n ${KUBE_NAMESPACE}'
+                }
                 }
             }
         }
