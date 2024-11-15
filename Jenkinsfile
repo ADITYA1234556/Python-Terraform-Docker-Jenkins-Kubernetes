@@ -66,6 +66,21 @@ pipeline {
                 }
             }
         }
+
+        stage('Configure AWS Credentials') {
+            steps {
+                script {
+                    // Using 'withCredentials' to inject AWS credentials into the environment variables
+                    withCredentials([usernamePassword(credentialsId: 'aws-credentials-id',
+                                                       usernameVariable: 'AWS_ACCESS_KEY_ID',
+                                                       passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                        // Now you can use AWS CLI commands with these credentials
+                        sh 'aws s3 ls'
+                    }
+                }
+            }
+        }
+
         stage('Deploy to Kubernetes') {
             steps {
                 script {
