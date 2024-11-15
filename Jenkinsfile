@@ -17,6 +17,7 @@ pipeline {
             steps {
                 // Checkout code from Git repository
                 checkout scm
+                sh 'ls -l $WORKSPACE'
             }
         }
 
