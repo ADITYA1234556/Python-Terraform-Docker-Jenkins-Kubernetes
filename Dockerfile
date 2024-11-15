@@ -14,9 +14,8 @@ COPY requirements.txt .
 
 RUN apt-get update && \
     apt-get install -y wget gnupg lsb-release && \
-    # Add MySQL APT GPG key
+    # Add MySQL APT GPG key and configuration package
     wget https://dev.mysql.com/get/mysql-apt-config_0.8.17-1_all.deb && \
-    wget https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-apt-config_0.8.17-1_all.deb && \
     dpkg -i mysql-apt-config_0.8.17-1_all.deb && \
     apt-get update && \
     apt-get install -y mysql-client && \
