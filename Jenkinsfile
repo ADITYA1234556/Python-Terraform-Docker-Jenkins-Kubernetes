@@ -10,6 +10,7 @@ pipeline {
         KUBE_NAMESPACE = "default" // Kubernetes namespace to deploy to
         DOCKER_TAG = "${GIT_COMMIT}" // Tag Docker images with the git commit ID
         KUBE_CONFIG = "/tmp/kubeconfig"
+        PROJECT_NAME = "flask-mysql"
     }
 
     stages {
@@ -21,19 +22,6 @@ pipeline {
             }
         }
 
-//         stage('Run Unit Tests') {
-//             steps {
-//                 script {
-//                      // Ensure the shell is using bash and activate the virtual environment using '.'
-//                     sh '''
-//                         #!/bin/bash
-//                         . /venv/bin/activate
-//                         pytest test_main.py --maxfail=1 --disable-warnings -q
-//                     '''
-//                 }
-//             }
-//         }
-
         stage('Docker compose down'){
             steps{
                 script {
@@ -42,11 +30,36 @@ pipeline {
             }
         }
 
-        stage('Run Docker Compose') {
+        stage('Run Docker Compose build') {
             steps {
                 script {
                     // Use Docker Compose to build and start the services defined in docker-compose.yaml
                     sh 'docker-compose -f docker-compose.yaml up --build -d'
+                }
+            }
+        }
+
+        stage('Run Docker Compose Up'){
+            steps{
+                script{
+                sh 'docker-compose up -d'
+                sh 'sleep 10'
+                }
+            }
+        }
+
+        stage('Perform Unit test'){
+            steps{
+                script{
+                    sh 'docker-compose exec -T pytest /wait.sh mysql-service:3306 pytest test_main.py'
+                    def testResult = sh(script: 'docker-compose exec -T pytest pytest test_main.py -v --tb=short', returnStatus: true)
+
+                    // Check if the tests passed (exit code 0 means success)
+                    if (testResult != 0) {
+                        error "Tests failed! Exiting pipeline."
+                    } else {
+                        echo 'Tests passed successfully.'
+                    }
                 }
             }
         }

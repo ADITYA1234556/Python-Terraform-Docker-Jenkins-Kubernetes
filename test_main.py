@@ -5,48 +5,76 @@ from main import app, db, Task
 @pytest.fixture
 def client():
     # Set the app's testing configuration
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://adi:admin@mysql-service:3306/admin'  # Use an in-memory SQLite database for tests
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'  # Use an in-memory SQLite database for tests
     app.config['TESTING'] = True
-    with app.test_client() as client:
-        yield client
-    db.session.remove()  # Clean up the session after tests
-
-
-# Test POST /tasks endpoint without hitting the real database
-def test_create_task(client, mocker):
-    # Mock the db session methods to avoid hitting the actual database
-    mock_add = mocker.patch('app.db.session.add')
-    mock_commit = mocker.patch('app.db.session.commit')
-
-    task_data = {'title': 'Test Task', 'description': 'Test description'}
-    response = client.post('/tasks', json=task_data)
-
-    # Check that the mock methods were called
-    mock_add.assert_called_once()
-    mock_commit.assert_called_once()
-
-    # Check the response
-    assert response.status_code == 201
-    assert response.json['message'] == 'Task created'
-    assert response.json['task']['title'] == 'Test Task'
-    assert response.json['task']['description'] == 'Test description'
-
-
+    with app.app_context():  # Create an application context
+        db.create_all()  # Create the tables in the test database
+        with app.test_client() as client:
+            yield client
+        db.session.remove()
 # Test GET /tasks endpoint without hitting the real database
 def test_get_tasks(client, mocker):
-    # Mock the database query
-    mock_query_all = mocker.patch('app.Task.query.all', return_value=[
-        Task(id=1, title='Test Task 1', description='Test description 1', done=False),
-        Task(id=2, title='Test Task 2', description='Test description 2', done=True)
-    ])
+    # Add tasks to the in-memory database before the test
+    task1 = Task(title="New Task 1", description="Description for task 1", done=False)
+    task2 = Task(title="New Task 2", description="Description for task 2", done=True)
+    db.session.add(task1)
+    db.session.add(task2)
+    db.session.commit()
 
+    # Now perform the GET request
     response = client.get('/tasks')
-
-    # Check that the mock method was called
-    mock_query_all.assert_called_once()
 
     # Check the response
     assert response.status_code == 200
-    assert len(response.json['tasks']) == 2
-    assert response.json['tasks'][0]['title'] == 'Test Task 1'
-    assert response.json['tasks'][1]['done'] is True
+    tasks = response.json['tasks']
+    assert len(tasks) == 2
+    assert tasks[0]['title'] == 'New Task 1'
+    assert tasks[1]['done'] is True
+
+# Test PUT /tasks/<task_id> endpoint (Update Task)
+def test_update_task(client):
+    # Add a task to the in-memory database before the test
+    task = Task(title="Old Task", description="Old description", done=False)
+    db.session.add(task)
+    db.session.commit()
+
+    updated_task_data = {
+        'title': 'Updated Task',
+        'description': 'Updated description',
+        'done': True
+    }
+
+    # Perform the PUT request to update the task with ID 1
+    response = client.put(f'/tasks/{task.id}', json=updated_task_data)
+
+    # Check the response
+    assert response.status_code == 200
+    assert response.json['message'] == 'Task updated'
+    updated_task = response.json['task']
+    assert updated_task['title'] == 'Updated Task'
+    assert updated_task['description'] == 'Updated description'
+    assert updated_task['done'] is True
+
+    # Verify the task was actually updated in the database
+    updated_task_in_db = Task.query.get(task.id)
+    assert updated_task_in_db.title == 'Updated Task'
+    assert updated_task_in_db.description == 'Updated description'
+    assert updated_task_in_db.done is True
+
+# Test DELETE /tasks/<task_id> endpoint (Delete Task)
+def test_delete_task(client):
+    # Add a task to the in-memory database before the test
+    task = Task(title="Task to delete", description="This task will be deleted", done=False)
+    db.session.add(task)
+    db.session.commit()
+
+    # Perform the DELETE request to delete the task with ID 1
+    response = client.delete(f'/tasks/{task.id}')
+
+    # Check the response
+    assert response.status_code == 200
+    assert response.json['message'] == 'Task deleted'
+
+    # Verify the task was actually deleted from the database
+    deleted_task = Task.query.get(task.id)
+    assert deleted_task is None  # Task should no longer exist in the databaseimport pytest
