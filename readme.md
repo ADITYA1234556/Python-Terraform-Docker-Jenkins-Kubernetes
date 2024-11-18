@@ -90,6 +90,10 @@ The following environment variables should be configured in Jenkins:
 | `DOCKER_USERNAME`       | Docker Hub username.                   |
 | `DOCKER_PASSWORD`       | Docker Hub password.                   |
 | `KUBECONFIG`            | Path to the Kubernetes configuration file. |
+| `AWS_ACCESS_KEY_ID`     | AWS IAM user's access key ID.          |
+| `AWS_SECRET_ACCESS_KEY` | AWS IAM user's secret access key.      |
+| `GITHUB_USERNAME`       | GitHub username for cloning repositories. |
+| `GITHUB_PERSONAL_ACCESS_TOKEN` | Personal access token for GitHub authentication. |
 
 ## Built With
 
