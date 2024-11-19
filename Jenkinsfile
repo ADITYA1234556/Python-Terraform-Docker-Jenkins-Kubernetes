@@ -34,7 +34,7 @@ pipeline {
             steps {
                 script {
                     // Use Docker Compose to build and start the services defined in docker-compose.yaml
-                    sh 'docker-compose -f docker-compose.yaml up --build -d'
+                    sh 'docker-compose -f $WORKSPACE/docker-compose.yaml up --build -d'
                 }
             }
         }
