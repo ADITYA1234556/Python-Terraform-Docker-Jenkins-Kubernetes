@@ -43,7 +43,7 @@ pipeline {
             steps{
                 script{
                 sh 'docker-compose up -d'
-                sh 'sleep 10'
+                sh 'sleep 5'
                 }
             }
         }
