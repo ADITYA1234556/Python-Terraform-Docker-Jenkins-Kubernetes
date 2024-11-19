@@ -18,9 +18,10 @@ RUN pip install pytest pytest-mock pytest-docker
 ENV FLASK_APP=http://flask-app:5000
 
 # Copy test files
+COPY . .
 COPY test_main.py .
 COPY --chmod=777 wait.sh /wait.sh
-COPY . .
+
 
 # Make wait.sh executable
 RUN chmod +x wait.sh

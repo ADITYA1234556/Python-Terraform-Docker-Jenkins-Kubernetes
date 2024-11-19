@@ -43,7 +43,8 @@ services:
     depends_on:
       - flask_app
       - mysql-service
-    command: ["sh", "-c", "/wait.sh mysql-service:3306 -- pytest test_main.py -v --tb=short && tail -f /dev/null"]
+    command: ["sh", "-c", "/wait.sh mysql-service:3306 -- pytest test_main.py -v --tb=short || tail -f /dev/null"]
+    #command: ["sh", "-c", "/wait.sh mysql-service:3306 -- pytest test_main.py -v --tb=short && tail -f /dev/null"]
     networks:
       - app-network
     volumes:
