@@ -1,6 +1,7 @@
 # Jenkins CI/CD Pipeline for Flask Application
 
 This repository contains the `Jenkinsfile` and supporting files to automate the CI/CD pipeline for a Flask application. The pipeline integrates with Docker, pytest, and Kubernetes to ensure a seamless workflow for building, testing, and deploying the application.
+The project has been recorded and posted on youtube, Link: https://youtu.be/K7V0dWVbxWA
 
 ## Project Overview
 
