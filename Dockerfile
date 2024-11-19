@@ -20,6 +20,7 @@ RUN chmod +x /wait.sh
 
 # Copy the rest of the application code into the container
 COPY main.py .
+RUN ls -l /app
 
 # Set environment variables for Flask
 ENV FLASK_APP=main.py

@@ -25,6 +25,7 @@ COPY --chmod=777 wait.sh /wait.sh
 
 # Make wait.sh executable
 RUN chmod +x wait.sh
+RUN ls -l /app
 
 # Default command to run the wait.sh script and then pytest
 CMD ["/wait.sh", "mysql-service:3306", "--", "pytest", "test_main.py", "-v", "--tb=short"]
