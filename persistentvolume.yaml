@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-pv
+spec:
+  capacity:
+    storage: 2Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain  # Ensure data is not deleted when PV is released
+  storageClassName: standard
+  awsElasticBlockStore:
+    volumeID: vol-02242fbd759d4b0a5  # Replace with the correct EBS volume ID
+    fsType: ext4

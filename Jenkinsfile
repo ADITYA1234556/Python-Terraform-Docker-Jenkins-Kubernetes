@@ -112,6 +112,8 @@ pipeline {
                     sh ' envsubst < $WORKSPACE/flask-dep.yaml > $WORKSPACE/flask-deployment-updated.yaml'
 
                     // Deploy Flask app and MySQL to Kubernetes
+                    sh 'KUBECONFIG=$KUBE_CONFIG kubectl apply -f $WORKSPACE/persistentvolume.yaml -n ${KUBE_NAMESPACE}'
+                    sh 'KUBECONFIG=$KUBE_CONFIG kubectl apply -f $WORKSPACE/persistentvolumeclaim.yaml -n ${KUBE_NAMESPACE}'
                     sh 'KUBECONFIG=$KUBE_CONFIG kubectl apply -f $WORKSPACE/mysql-deployment-updated.yaml -n ${KUBE_NAMESPACE}'
                     sh 'KUBECONFIG=$KUBE_CONFIG kubectl apply -f $WORKSPACE/flask-deployment-updated.yaml -n ${KUBE_NAMESPACE}'
                 }
